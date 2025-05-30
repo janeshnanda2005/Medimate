@@ -79,13 +79,6 @@ MediMate is an AI-powered Flask web application that helps users find the right 
    API_KEY = os.getenv('GEMINI_API_KEY')
    ```
 
-## 🔑 Getting a Gemini API Key
-
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Sign in with your Google account
-3. Create a new API key
-4. Copy the generated API key
-5. Add it to your `.env` file or directly in the code
 
 ## 🏃‍♂️ Running the Application
 
