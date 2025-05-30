@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediMate - Find the Right Specialist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+
+        .header .tagline {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .message {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .bot-avatar {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .message-content {
+            background: white;
+            padding: 18px 22px;
+            border-radius: 20px;
+            max-width: 75%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .specialist-recommendation {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .specialist-name {
+            font-weight: 700;
+            color: #0c4a6e;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .input-area {
+            padding: 25px 30px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            min-height: 55px;
+            max-height: 120px;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 28px;
+            font-size: 16px;
+            resize: none;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .send-btn {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 22px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 20px;
+            max-width: 75%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 10px;
+            height: 10px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .welcome-message {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .welcome-title {
+            font-weight: 700;
+            color: #065f46;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .disclaimer {
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+            padding: 15px 25px;
+            background: #f9fafb;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 90vh;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .messages {
+                padding: 20px;
+            }
+            
+            .input-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩺 MediMate</h1>
+            <p class="subtitle">Find the Right Medical Specialist</p>
+            <p class="tagline">Describe your symptoms and get specialist recommendations</p>
+        </div>
+
+        <div class="chat-container">
+            <div id="messages" class="messages">
+                <div class="message">
+                    <div class="message-avatar bot-avatar">🏥</div>
+                    <div class="message-content">
+                        <div class="welcome-message">
+                            <div class="welcome-title">Welcome to MediMate!</div>
+                            <p>I'm here to help you find the right medical specialist based on your symptoms and health concerns. Simply describe what you're experiencing, and I'll recommend the most appropriate healthcare professional to consult.</p>
+                            <br>
+                            <p><strong>How to get started:</strong></p>
+                            <p>• Describe your symptoms in detail</p>
+                            <p>• Mention how long you've been experiencing them</p>
+                            <p>• Include any relevant medical history</p>
+                            <p>• Ask about specific health concerns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-group">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="Describe your symptoms or health concerns... (e.g., 'I've been having chest pain and shortness of breath')"
+                    ></textarea>
+                    <button onclick="sendMessage()" class="send-btn" id="sendBtn">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ MediMate provides specialist recommendations based on symptoms. This is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical decisions.
+        </div>
+    </div>
+
+    <script>
+        let isTyping = false;
+
+        function addMessage(content, isUser = false, isError = false) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : ''}`;
+            
+            let messageContent = content;
+            if (isError) {
+                messageContent = `<div class="error-message">${content}</div>`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar ${isUser ? 'user-avatar' : 'bot-avatar'}">
+                    ${isUser ? '👤' : '🏥'}
+                </div>
+                <div class="message-content">
+                    ${messageContent}
+                </div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message';
+            typingDiv.id = 'typingIndicator';
+            
+            typingDiv.innerHTML = `
+                <div class="message-avatar bot-avatar">🏥</div>
+                <div class="typing-indicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    <span>MediMate is analyzing your symptoms...</span>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingDiv = document.getElementById('typingIndicator');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const message = messageInput.value.trim();
+            
+            if (!message || isTyping) return;
+            
+            // Add user message
+            addMessage(message, true);
+            messageInput.value = '';
+            
+            // Disable input during API call
+            isTyping = true;
+            sendBtn.disabled = true;
+            messageInput.disabled = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to get response');
+                }
+                
+                // Hide typing indicator and add bot response
+                hideTypingIndicator();
+                addMessage(formatResponse(data.response));
+                
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage(`I apologize, but I encountered an error: ${error.message}. Please try again.`, false, true);
+                console.error('API Error:', error);
+            } finally {
+                // Re-enable input
+                isTyping = false;
+                sendBtn.disabled = false;
+                messageInput.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        function formatResponse(response) {
+            // Enhanced formatting for specialist recommendations
+            let formatted = response;
+            
+            // Highlight specialist names
+            const specialistPattern = /\b(Cardiologist|Dermatologist|Neurologist|Orthopedist|Gastroenterologist|Pulmonologist|Endocrinologist|Rheumatologist|Psychiatrist|Gynecologist|Urologist|Ophthalmologist|ENT Specialist|Oncologist|Nephrologist|Hematologist|Allergist|Immunologist|Radiologist|Pathologist|Emergency Medicine|Family Medicine|Internal Medicine|Pediatrician)\b/gi;
+            
+            formatted = formatted.replace(specialistPattern, '<span class="specialist-name">$1</span>');
+            
+            return formatted;
+        }
+
+        // Handle Enter key for sending messages
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Focus on input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('messageInput').focus();
+        });
+    </script>
+</body>
+</html>
